@@ -1,0 +1,77 @@
+package com.virtualightning.library.simple2develop.state;
+
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
+
+/**
+ * Created by CimZzz on 16/7/21.<br/>
+ * Project Name : Virtual-Lightning Simple2Develop<br/>
+ * Since : VLSimple2Develop_0.0.1<br/>
+ * Description:<br/>
+ * 主线程调用类
+ */
+public final class MainLoopCall{
+    static final int MSG_STATE_UPDATE = 1001;
+
+    private static MainLoopCall call;
+    private Handler hander;
+
+    /*定义单例方法*/
+
+    private MainLoopCall()
+    {
+        hander = new InternalHandler(Looper.getMainLooper());
+    }
+
+    static MainLoopCall getInstance()
+    {
+        return call != null ? call : (call = new MainLoopCall());
+    }
+
+
+
+    /*委托方法*/
+
+    /**
+     * 运行Runnable方法
+     * @param runnable Runnable
+     */
+    public void postRunnable(Runnable runnable){
+        hander.post(runnable);
+    }
+
+    /**
+     * 获得消息
+     * @return 消息
+     */
+    Message obtainMessage()
+    {
+        return hander.obtainMessage();
+    }
+
+    /*内部类*/
+
+    /*内部Handler*/
+
+    static class InternalHandler extends Handler{
+        private InternalHandler(Looper looper)
+        {
+            super(looper);
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what)
+            {
+                case MSG_STATE_UPDATE :
+                    Object[] objects = (Object[]) msg.obj;
+                    StateMediator mediator = (StateMediator)objects[0];
+
+                    if(msg.arg1 == mediator.getSequenceId())
+                        mediator.updateObserver((Object[])objects[1]);
+                    break;
+            }
+        }
+    }
+}

@@ -2,10 +2,10 @@ package com.virtualightning.library.simple2develop.state;
 
 
 /**
- * Created by CimZzz on 16/6/26.<br/>
- * Project Name : Virtual-Lightning Simple2Develop<br/>
- * Since : VLSimple2Develop_0.0.1<br/>
- * Description:<br/>
+ * Created by CimZzz on 16/6/26.<br>
+ * Project Name : Virtual-Lightning Simple2Develop<br>
+ * Since : VLSimple2Develop_0.0.1<br>
+ * Description:<br>
  * 状态管理器（单例）（备忘录）
  */
 @SuppressWarnings("unused")

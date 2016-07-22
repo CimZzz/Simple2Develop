@@ -6,10 +6,10 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Created by CimZzz on 16/7/22.<br/>
- * Project Name : Virtual-Lightning Simple2Develop<br/>
- * Since : VLSimple2Develop_0.0.1<br/>
- * Description:<br/>
+ * Created by CimZzz on 16/7/22.<br>
+ * Project Name : Virtual-Lightning Simple2Develop<br>
+ * Since : VLSimple2Develop_0.0.1<br>
+ * Description:<br>
  * 监控继承状态注解
  */
 @SuppressWarnings("unused")

@@ -1,11 +1,11 @@
 package com.virtualightning.library.simple2develop.state;
 
 /**
- * Created by CimZzz on 16/7/22.<br/>
- * Project Name : Virtual-Lightning Simple2Develop<br/>
- * Since : VLSimple2Develop_0.0.1<br/>
- * Description:<br/>
- * 被动状态观察者<br/>
+ * Created by CimZzz on 16/7/22.<br>
+ * Project Name : Virtual-Lightning Simple2Develop<br>
+ * Since : VLSimple2Develop_0.0.1<br>
+ * Description:<br>
+ * 被动状态观察者<br>
  * 每次验证均返回true
  */
 @SuppressWarnings("unused")

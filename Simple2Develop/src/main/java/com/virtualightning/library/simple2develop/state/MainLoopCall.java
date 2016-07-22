@@ -5,10 +5,10 @@ import android.os.Looper;
 import android.os.Message;
 
 /**
- * Created by CimZzz on 16/7/21.<br/>
- * Project Name : Virtual-Lightning Simple2Develop<br/>
- * Since : VLSimple2Develop_0.0.1<br/>
- * Description:<br/>
+ * Created by CimZzz on 16/7/21.<br>
+ * Project Name : Virtual-Lightning Simple2Develop<br>
+ * Since : VLSimple2Develop_0.0.1<br>
+ * Description:<br>
  * 主线程调用类
  */
 @SuppressWarnings("unused")
@@ -62,7 +62,7 @@ public final class MainLoopCall{
         }
 
         /**
-         * 处理Simple2Develop的内部消息<br/>
+         * 处理Simple2Develop的内部消息<br>
          * <ol>
          *     <li>消息名：{@link #MSG_STATE_UPDATE} ： 执行状态观察者的更新</li>
          * </ol>

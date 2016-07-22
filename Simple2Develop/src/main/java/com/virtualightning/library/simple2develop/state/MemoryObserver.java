@@ -1,11 +1,11 @@
 package com.virtualightning.library.simple2develop.state;
 
 /**
- * Created by CimZzz on 16/7/22.<br/>
- * Project Name : Virtual-Lightning Simple2Develop<br/>
- * Since : VLSimple2Develop_0.0.1<br/>
- * Description:<br/>
- * 记忆状态观察者<br/>
+ * Created by CimZzz on 16/7/22.<br>
+ * Project Name : Virtual-Lightning Simple2Develop<br>
+ * Since : VLSimple2Develop_0.0.1<br>
+ * Description:<br>
+ * 记忆状态观察者<br>
  * 只有当更新的状态与内部的旧状态不一致时才会执行更新
  */
 @SuppressWarnings("unused")

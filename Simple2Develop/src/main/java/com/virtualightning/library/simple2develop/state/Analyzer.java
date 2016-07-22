@@ -29,6 +29,7 @@ public class Analyzer {
 
         if(stateAnno != null) {
 
+
             String[] stateNames = stateAnno.stateNames();
             boolean[] states = stateAnno.states();
 

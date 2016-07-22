@@ -8,6 +8,7 @@ package com.virtualightning.library.simple2develop.state;
  * Description:<br/>
  * 状态管理器（单例）（备忘录）
  */
+@SuppressWarnings("unused")
 public final class StateManagement {
     private static StateManagement management;
 

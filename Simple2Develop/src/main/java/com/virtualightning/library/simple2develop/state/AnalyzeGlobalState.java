@@ -12,6 +12,7 @@ import java.lang.annotation.Target;
  * Description:<br/>
  * 监控全局状态注解
  */
+@SuppressWarnings("unused")
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface AnalyzeGlobalState {

@@ -12,6 +12,7 @@ import java.lang.annotation.Target;
  * Description:<br/>
  * 视图初始化注解
  */
+@SuppressWarnings("unused")
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface AnalyzeView {

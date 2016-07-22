@@ -10,7 +10,9 @@ import java.util.List;
  * Project Name : Virtual-Lightning Simple2Develop<br/>
  * Since : VLSimple2Develop_0.0.1<br/>
  * Description:<br/>
+ * 状态对象
  */
+@SuppressWarnings("unused")
 public final class State {
     private boolean state;
     private List<WeakReference<StateMediator>> mediatorReferences;

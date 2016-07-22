@@ -11,6 +11,7 @@ import android.os.Message;
  * Description:<br/>
  * 主线程调用类
  */
+@SuppressWarnings("unused")
 public final class MainLoopCall{
     static final int MSG_STATE_UPDATE = 1001;
 
@@ -60,6 +61,13 @@ public final class MainLoopCall{
             super(looper);
         }
 
+        /**
+         * 处理Simple2Develop的内部消息<br/>
+         * <ol>
+         *     <li>消息名：{@link #MSG_STATE_UPDATE} ： 执行状态观察者的更新</li>
+         * </ol>
+         * @param msg 消息
+         */
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what)

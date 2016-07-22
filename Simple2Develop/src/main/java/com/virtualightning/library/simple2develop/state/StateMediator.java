@@ -8,7 +8,9 @@ import android.support.annotation.Nullable;
  * Project Name : Virtual-Lightning Simple2Develop<br/>
  * Since : VLSimple2Develop_0.0.1<br/>
  * Description:<br/>
+ * 状态中介者
  */
+@SuppressWarnings("unused")
 public final class StateMediator {
     private State state;
     private InternalState internalState;

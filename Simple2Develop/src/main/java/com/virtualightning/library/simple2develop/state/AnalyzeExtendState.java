@@ -10,7 +10,9 @@ import java.lang.annotation.Target;
  * Project Name : Virtual-Lightning Simple2Develop<br/>
  * Since : VLSimple2Develop_0.0.1<br/>
  * Description:<br/>
+ * 监控继承状态注解
  */
+@SuppressWarnings("unused")
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface AnalyzeExtendState {

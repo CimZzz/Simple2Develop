@@ -11,6 +11,7 @@ import java.lang.reflect.Field;
  * Description:<br/>
  * 注解解析器
  */
+@SuppressWarnings("unused")
 public class Analyzer {
 
 

@@ -8,6 +8,7 @@ import java.util.Map;
  * Project Name : Virtual-Lightning Simple2Develop<br/>
  * Since : VLSimple2Develop_0.0.1<br/>
  * Description:<br/>
+ * 状态记录
  */
 @SuppressWarnings("unused")
 public final class StateRecord {

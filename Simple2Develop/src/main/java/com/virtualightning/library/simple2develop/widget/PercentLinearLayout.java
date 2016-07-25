@@ -13,7 +13,7 @@ import android.widget.ScrollView;
 /**
  * Created by zhy on 16/6/26.<br>
  * Since : VLSimple2Develop_0.0.3<br>
- * Description:<br/>
+ * Description:<br>
  * 圆形图像视图
  */
 @SuppressWarnings("unused")

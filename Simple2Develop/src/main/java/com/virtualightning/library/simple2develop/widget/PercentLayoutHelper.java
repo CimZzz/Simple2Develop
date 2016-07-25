@@ -40,11 +40,9 @@ import java.util.regex.Pattern;
 
 /**
  * Helper for layouts that want to support percentage based dimensions.
- * <p/>
  * <p>This class collects utility methods that are involved in extracting percentage based dimension
  * attributes and applying them to ViewGroup's children. If you would like to implement a layout
  * that supports percentage based dimensions, you need to take several steps:
- * <p/>
  * <ol>
  * <li> You need a {@link ViewGroup.LayoutParams} subclass in your ViewGroup that implements
  * <li> In your {@code LayoutParams(Context c, AttributeSet attrs)} constructor create an instance
@@ -558,7 +556,7 @@ public class PercentLayoutHelper
 
     /**
      * widthStr to PercentVal
-     * <br/>
+     * <br>
      * eg: 35%w => new PercentVal(35, true)
      */
     private static PercentLayoutInfo.PercentVal getPercentVal(String percentStr, boolean isOnWidth)
@@ -653,7 +651,7 @@ public class PercentLayoutHelper
     /**
      * Iterates over children and checks if any of them would like to get more space than it
      * received through the percentage dimension.
-     * <p/>
+     * <p>
      * If you are building a layout that supports percentage dimensions you are encouraged to take
      * advantage of this method. The developer should be able to specify that a child should be
      * remeasured by adding normal dimension attribute with {@code wrap_content} value. For example
@@ -948,7 +946,7 @@ public class PercentLayoutHelper
     /**
      * If a layout wants to support percentage based dimensions and use this helper class, its
      * {@code LayoutParams} subclass must implement this interface.
-     * <p/>
+     * <p>
      * Your {@code LayoutParams} subclass should contain an instance of {@code PercentLayoutInfo}
      * and the implementation of this interface should be a simple accessor.
      */

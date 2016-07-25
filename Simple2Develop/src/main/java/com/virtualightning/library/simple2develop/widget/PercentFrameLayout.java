@@ -34,13 +34,13 @@ import android.widget.FrameLayout;
  *         xmlns:android="http://schemas.android.com/apk/res/android"
  *         xmlns:app="http://schemas.android.com/apk/res-auto"
  *         android:layout_width="match_parent"
- *         android:layout_height="match_parent"/&gt
+ *         android:layout_height="match_parent"&gt;
  *     &lt;ImageView
  *         app:layout_widthPercent="50%"
  *         app:layout_heightPercent="50%"
  *         app:layout_marginTopPercent="25%"
- *         app:layout_marginLeftPercent="25%"/&gt
- * &lt;/android.support.percent.PercentFrameLayout/&gt
+ *         app:layout_marginLeftPercent="25%"&gt;
+ * &lt;/android.support.percent.PercentFrameLayout&gt;
  * </pre>
  *
  * The attributes that you can use are:

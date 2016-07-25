@@ -1,10 +1,10 @@
 package com.virtualightning.library.simple2develop.ui;
 
 /**
- * Created by CimZzz on 16/6/26.<br/>
+ * Created by CimZzz on 16/6/26.<br>
  * Project Name : Virtual-Lightning Simple2Develop<br>
  * Since : VLSimple2Develop_0.0.3<br>
- * Description:<br/>
+ * Description:<br>
  * 界面生成器
  * 包装了一些生成界面所需必要的属性和额外的属性
  */

@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- ViewPager标签栏缺省高度 -->
+    <dimen name="viewpage_tab_height">30dp</dimen>
+</resources>

@@ -2,10 +2,10 @@ apply plugin: 'com.android.library'
 apply plugin: 'com.github.dcendents.android-maven'
 apply plugin: 'com.jfrog.bintray'
 
-version = "0.0.2"
+version = "0.0.3"
 
 android {
-    resourcePrefix "cimzzz_" //随意填写
+    resourcePrefix "" //随意填写
 
     compileSdkVersion 24
     buildToolsVersion "24.0.1"

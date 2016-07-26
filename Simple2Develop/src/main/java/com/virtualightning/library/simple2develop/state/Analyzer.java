@@ -1,5 +1,8 @@
 package com.virtualightning.library.simple2develop.state;
 
+import android.app.Activity;
+import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
 import java.lang.reflect.Field;
@@ -74,6 +77,45 @@ public class Analyzer {
 
 
     /*解析视图*/
+
+    /**
+     * 根据Activity解析视图
+     * @param activity Activity
+     */
+    public static void analyzeView(Activity activity)
+    {
+        analyzeView(activity,activity.getWindow().getDecorView());
+    }
+
+    /**
+     * 根据AppCompatActivity解析视图
+     * @param activity AppCompatActivity
+     */
+    public static void analyzeView(AppCompatActivity activity)
+    {
+        analyzeView(activity,activity.getWindow().getDecorView());
+    }
+
+
+    /**
+     * 根据Fragment解析视图
+     * @param fragment Fragment
+     */
+    public static void analyzeView(Fragment fragment)
+    {
+        analyzeView(fragment,fragment.getView());
+    }
+
+
+    /**
+     * 根据Fragment解析视图
+     * @param fragment Fragment
+     */
+    public static void analyzeView(android.app.Fragment fragment)
+    {
+        analyzeView(fragment,fragment.getView());
+    }
+
 
     /**
      * 解析对象的视图注解

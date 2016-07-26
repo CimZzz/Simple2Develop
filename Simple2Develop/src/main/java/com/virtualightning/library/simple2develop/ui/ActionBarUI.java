@@ -5,9 +5,8 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
-
-import com.virtualightning.library.simple2develop.R;
 
 /**
  * Created by CimZzz on 16/7/23.<br>
@@ -20,9 +19,9 @@ import com.virtualightning.library.simple2develop.R;
 public abstract class ActionBarUI extends AppCompatActivity {
     private static final int ACTIONBAR_DEFAULT_DP = 50;
     private static Integer actionBarHeight;
-    private ViewGroup rootView;
-    private ViewGroup actionBarView;
-    private ViewGroup contentView;
+    private LinearLayout rootView;
+    private FrameLayout actionBarView;
+    private FrameLayout contentView;
 
 
     /*定义模板方法*/
@@ -54,23 +53,30 @@ public abstract class ActionBarUI extends AppCompatActivity {
 
         LayoutInflater inflater = getLayoutInflater();
 
-        setContentView(R.layout.baseui_activity);
-        rootView = (ViewGroup) findViewById(R.id.baseui_activity_rootview);
-        actionBarView = (ViewGroup) rootView.findViewById(R.id.baseui_activity_actionbar);
-        contentView = (ViewGroup) rootView.findViewById(R.id.baseui_activity_content);
+        rootView = new LinearLayout(this);
+        rootView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        rootView.setOrientation(LinearLayout.VERTICAL);
 
         Integer actionBarID = creater.getActionBarID();
         if(actionBarID != null)
         {
+            actionBarView = new FrameLayout(this);
             actionBarView.setLayoutParams(new LinearLayout.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT,
                     actionBarHeight
             ));
             actionBarView.addView(inflater.inflate(actionBarID,null));
+            rootView.addView(actionBarView);
         }
-        else actionBarView = null;
-        contentView.addView(inflater.inflate(creater.getLayoutID(), null));
 
+        contentView = new FrameLayout(this);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,0);
+        params.weight = 1;
+        contentView.setLayoutParams(params);
+        contentView.addView(inflater.inflate(creater.getLayoutID(), null));
+        rootView.addView(contentView);
+
+        setContentView(rootView);
         onViewInit(savedInstanceState);
     }
 

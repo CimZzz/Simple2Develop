@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">Simple2Develop</string>
+
+    <string name="viewpage_name_1">页面1</string>
+    <string name="viewpage_name_2">页面2</string>
+    <string name="viewpage_name_3">页面3</string>
+    <string name="viewpage_name_4">页面4</string>
 </resources>

@@ -31,7 +31,7 @@
         <attr name="border_color" format="color" />
     </declare-styleable>
 
-    <declare-styleable name="BaseViewPager">
+    <declare-styleable name="FragmentViewPager">
         <attr name="existTab" format="boolean"/>
         <attr name="reverseTab" format="boolean"/>
         <attr name="tabHeight" format="dimension"/>

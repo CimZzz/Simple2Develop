@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.virtualightning.library.simple2develop.widget.FragmentViewPager xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:existTab="true"
+    app:reverseTab="true"
+    app:tabHeight="35dp"
+    app:tabCount="3"
+
+    android:id="@+id/viewpager">
+
+</com.virtualightning.library.simple2develop.widget.FragmentViewPager>

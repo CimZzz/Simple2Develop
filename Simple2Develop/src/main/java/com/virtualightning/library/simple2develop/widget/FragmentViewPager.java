@@ -23,6 +23,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.virtualightning.library.simple2develop.R;
+
 import com.virtualightning.library.simple2develop.interfaces.OnDrawingListener;
 
 import java.lang.ref.SoftReference;
@@ -123,7 +124,7 @@ public class FragmentViewPager extends LinearLayout implements ViewPager.OnPageC
 
         setOrientation(VERTICAL);
 
-        TypedArray typedArray = context.obtainStyledAttributes(attrs,R.styleable.BaseViewPager);
+        TypedArray typedArray = context.obtainStyledAttributes(attrs,R.styleable.FragmentViewPager);
 
 
         LinearLayout.LayoutParams params =
@@ -132,7 +133,7 @@ public class FragmentViewPager extends LinearLayout implements ViewPager.OnPageC
 
         viewPager.setLayoutParams(params);
 
-        existTab = typedArray.getBoolean(R.styleable.BaseViewPager_existTab, false);
+        existTab = typedArray.getBoolean(R.styleable.FragmentViewPager_existTab, false);
 
         if(existTab)
         {
@@ -148,19 +149,19 @@ public class FragmentViewPager extends LinearLayout implements ViewPager.OnPageC
             scrollView.setHorizontalScrollBarEnabled(false);
             scrollView.setFillViewport(true);
 
-            tabHeight = typedArray.getDimensionPixelSize(R.styleable.BaseViewPager_tabHeight, -1);
+            tabHeight = typedArray.getDimensionPixelSize(R.styleable.FragmentViewPager_tabHeight, -1);
 
             if(tabHeight == -1)
                 tabHeight = context.getResources().getDimensionPixelSize(R.dimen.viewpage_tab_height);
 
-            tabCount = typedArray.getInt(R.styleable.BaseViewPager_tabCount, -1);
+            tabCount = typedArray.getInt(R.styleable.FragmentViewPager_tabCount, -1);
             if(tabCount == -1)
                 tabCount = 3;
 
             drawHelper.start = 0;
             lastTabPostion = tabCount;
 
-            boolean reverseTab = typedArray.getBoolean(R.styleable.BaseViewPager_reverseTab,false);
+            boolean reverseTab = typedArray.getBoolean(R.styleable.FragmentViewPager_reverseTab,false);
 
             tabLayout.setLayoutParams(new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, tabHeight));
             drawView.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));

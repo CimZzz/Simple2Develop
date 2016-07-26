@@ -12,6 +12,12 @@ import com.virtualightning.simple2develop.R;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Created by CimZzz on 16/7/25.<br>
+ * Project Name : Virtual-Lightning Simple2Develop<br>
+ * Since : VLSimple2Develop_0.0.3<br>
+ * Description:<br>
+ */
 public class ViewPagerActivity extends AppCompatActivity {
     @AnalyzeView(R.id.viewpager)
     private FragmentViewPager viewPager;

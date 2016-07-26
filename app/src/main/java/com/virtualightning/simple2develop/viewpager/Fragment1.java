@@ -14,8 +14,8 @@ import com.virtualightning.simple2develop.R;
 
 /**
  * Created by CimZzz on 16/7/25.<br>
- * Project Name : Virtual-Lightning Riding<br>
- * Since : VLRiding_0.0.1<br>
+ * Project Name : Virtual-Lightning Simple2Develop<br>
+ * Since : VLSimple2Develop_0.0.3<br>
  * Description:<br>
  */
 @PagerName(R.string.viewpage_name_1)

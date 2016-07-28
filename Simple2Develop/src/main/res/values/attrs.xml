@@ -31,8 +31,9 @@
         <attr name="border_color" format="color" />
     </declare-styleable>
 
-    <declare-styleable name="FragmentViewPager">
+    <declare-styleable name="ImprovedViewPager">
         <attr name="existTab" format="boolean"/>
+        <attr name="canTouchScroll" format="boolean"/>
         <attr name="reverseTab" format="boolean"/>
         <attr name="tabHeight" format="dimension"/>
         <attr name="tabCount" format="integer"/>

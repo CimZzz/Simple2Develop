@@ -6,7 +6,7 @@ import android.os.Bundle;
 
 import com.virtualightning.library.simple2develop.state.AnalyzeView;
 import com.virtualightning.library.simple2develop.state.Analyzer;
-import com.virtualightning.library.simple2develop.widget.FragmentViewPager;
+import com.virtualightning.library.simple2develop.widget.ImprovedViewPager;
 import com.virtualightning.simple2develop.R;
 
 import java.util.ArrayList;
@@ -20,7 +20,7 @@ import java.util.List;
  */
 public class ViewPagerActivity extends AppCompatActivity {
     @AnalyzeView(R.id.viewpager)
-    private FragmentViewPager viewPager;
+    private ImprovedViewPager viewPager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

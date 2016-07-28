@@ -6,7 +6,7 @@ import android.view.SurfaceView;
 /**
  * Created by CimZzz on 16/7/27.<br>
  * Project Name : Virtual-Lightning Simple2Develop<br>
- * Since : VLSimple2Develop_0.0.5<br>
+ * Since : VLSimple2Develop_0.0.6<br>
  * Description:<br>
  * Surface脚本<br>
  * 包装了一些简单操作
@@ -26,7 +26,7 @@ public abstract class SurfaceScript implements SurfaceHolder.Callback{
     }
 
     @Override
-    public void surfaceChanged(SurfaceHolder surfaceHolder, int i, int i1, int i2) {
+    public void surfaceChanged(SurfaceHolder surfaceHolder, int format, int width, int height) {
 
     }
 

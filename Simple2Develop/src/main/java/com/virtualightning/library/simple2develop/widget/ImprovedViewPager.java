@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -15,6 +16,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -41,7 +43,7 @@ import java.util.List;
  * FragmentViewPager
  */
 @SuppressWarnings("unused")
-public class FragmentViewPager extends LinearLayout implements ViewPager.OnPageChangeListener{
+public class ImprovedViewPager extends LinearLayout implements ViewPager.OnPageChangeListener{
 
     /*内部参数*/
 
@@ -91,7 +93,7 @@ public class FragmentViewPager extends LinearLayout implements ViewPager.OnPageC
     /**
      * ViewPager容器
      */
-    private ViewPager viewPager;
+    private CustomViewPager viewPager;
 
     /**
      * Tab标题栏绘图视图
@@ -101,7 +103,7 @@ public class FragmentViewPager extends LinearLayout implements ViewPager.OnPageC
     /**
      * BaseUIPager适配器
      */
-    private PagerAdapter adapter;
+    private PagerAdapterCallBack adapterCallBack;
 
     /**
      * BaseUIPager标签适配器
@@ -113,18 +115,18 @@ public class FragmentViewPager extends LinearLayout implements ViewPager.OnPageC
      */
     private DrawHelper drawHelper;
 
-    public FragmentViewPager(Context context, AttributeSet attrs) {
+    public ImprovedViewPager(Context context, AttributeSet attrs) {
         super(context, attrs);
 
         isInit = true;
 
-        viewPager = new ViewPager(context);
+        viewPager = new CustomViewPager(context);
         viewPager.setId(viewPager.hashCode());
         viewPager.addOnPageChangeListener(this);
 
         setOrientation(VERTICAL);
 
-        TypedArray typedArray = context.obtainStyledAttributes(attrs,R.styleable.FragmentViewPager);
+        TypedArray typedArray = context.obtainStyledAttributes(attrs,R.styleable.ImprovedViewPager);
 
 
         LinearLayout.LayoutParams params =
@@ -133,7 +135,11 @@ public class FragmentViewPager extends LinearLayout implements ViewPager.OnPageC
 
         viewPager.setLayoutParams(params);
 
-        existTab = typedArray.getBoolean(R.styleable.FragmentViewPager_existTab, false);
+        existTab = typedArray.getBoolean(R.styleable.ImprovedViewPager_existTab, false);
+
+        boolean canTouchScroll = typedArray.getBoolean(R.styleable.ImprovedViewPager_canTouchScroll,true);
+
+        viewPager.setCanTouchScroll(canTouchScroll);
 
         if(existTab)
         {
@@ -149,19 +155,19 @@ public class FragmentViewPager extends LinearLayout implements ViewPager.OnPageC
             scrollView.setHorizontalScrollBarEnabled(false);
             scrollView.setFillViewport(true);
 
-            tabHeight = typedArray.getDimensionPixelSize(R.styleable.FragmentViewPager_tabHeight, -1);
+            tabHeight = typedArray.getDimensionPixelSize(R.styleable.ImprovedViewPager_tabHeight, -1);
 
             if(tabHeight == -1)
                 tabHeight = context.getResources().getDimensionPixelSize(R.dimen.viewpage_tab_height);
 
-            tabCount = typedArray.getInt(R.styleable.FragmentViewPager_tabCount, -1);
+            tabCount = typedArray.getInt(R.styleable.ImprovedViewPager_tabCount, -1);
             if(tabCount == -1)
                 tabCount = 3;
 
             drawHelper.start = 0;
             lastTabPostion = tabCount;
 
-            boolean reverseTab = typedArray.getBoolean(R.styleable.FragmentViewPager_reverseTab,false);
+            boolean reverseTab = typedArray.getBoolean(R.styleable.ImprovedViewPager_reverseTab,false);
 
             tabLayout.setLayoutParams(new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, tabHeight));
             drawView.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
@@ -253,34 +259,13 @@ public class FragmentViewPager extends LinearLayout implements ViewPager.OnPageC
         }
     }
 
-    private View generateTabItem(AppCompatActivity baseUI, final int position, Class<? extends Fragment> pageCls)
+
+    private View generateTabItem(AppCompatActivity activity, final int position,@Nullable Class pageCls)
     {
         View tabItemView;
-        if (tabViewFactory == null)
+        if (tabViewFactory != null)
         {
-            TextView textView = new TextView(baseUI);
-            textView.setGravity(Gravity.CENTER);
-            textView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
-                    ViewGroup.LayoutParams.MATCH_PARENT));
-
-            PagerName pagerName = pageCls.getAnnotation(PagerName.class);
-
-            int nameID = pagerName != null ? pagerName.value() : -1;
-
-
-            //noinspection ResourceType
-            textView.setText(nameID != -1 ? baseUI.getText(nameID) : "无名字");
-
-            textView.setOnClickListener(new OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    viewPager.setCurrentItem(position, true);
-                }
-            });
-            tabItemView = textView;
-        }
-        else {
-            tabItemView = tabViewFactory.generatedView(baseUI.getLayoutInflater(),position,pageCls);
+            tabItemView = tabViewFactory.generatedView(activity.getLayoutInflater(),position);
 
             OnClickListener clickListener = tabViewFactory.generatedOnClickListener(viewPager,position);
 
@@ -290,6 +275,29 @@ public class FragmentViewPager extends LinearLayout implements ViewPager.OnPageC
                     viewPager.setCurrentItem(position, true);
                 }
             } : clickListener);
+        }
+        else{
+            TextView textView = new TextView(activity);
+            textView.setGravity(Gravity.CENTER);
+            textView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+                    ViewGroup.LayoutParams.MATCH_PARENT));
+
+            int nameID = -1;
+            if(pageCls != null) {
+                PagerName pagerName = (PagerName) pageCls.getAnnotation(PagerName.class);
+                nameID = pagerName != null ? pagerName.value() : -1;
+            }
+
+            //noinspection ResourceType
+            textView.setText(nameID != -1 ? activity.getText(nameID) : "无名字");
+
+            textView.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    viewPager.setCurrentItem(position, true);
+                }
+            });
+            tabItemView = textView;
         }
 
 
@@ -312,46 +320,69 @@ public class FragmentViewPager extends LinearLayout implements ViewPager.OnPageC
 
     public Bundle getPagerBundle()
     {
-        return adapter != null ? adapter.getPagerBundle() : null;
+        return adapterCallBack != null ? adapterCallBack.getPagerBundle() : null;
     }
 
     public void resetData()
     {
-        if(adapter != null)
-            adapter.resetData();
+        if(adapterCallBack != null)
+            adapterCallBack.resetData();
     }
 
     public int size()
     {
-        return adapter != null ? adapter.getCount() : -1;
+        return adapterCallBack != null ? adapterCallBack.getCount() : -1;
+    }
+
+
+    /*设置适配器*/
+    public final void setPagerAdapter(AppCompatActivity activity,AbstractPagerAdapter adapter)
+    {
+        adapterCallBack = adapter;
+        viewPager.setAdapter(adapter);
+
+        if(existTab) {
+            /*使用变量i 与 position 设定点击事件定位的位置*/
+            int length = adapter.getCount();
+
+            tabContent.removeAllViews();
+            for (int i = 0 ; i < length ; i++) {
+                tabContent.addView(generateTabItem(activity,i,null));
+            }
+
+            tabWidth = -1;
+        }
+
     }
 
     @SafeVarargs
-    public final void setBaseUIFragmentAdapter(AppCompatActivity baseUI, Class<? extends Fragment>... pagerCls)
+    public final void setFragmentAdapter(AppCompatActivity activity, Class<? extends Fragment>... pagerCls)
     {
         List<Class<? extends Fragment>> clsList = new ArrayList<>();
 
         Collections.addAll(clsList, pagerCls);
 
-        setFragmentAdapter(baseUI,clsList);
+        setFragmentAdapter(activity,clsList);
     }
 
-    public final void setFragmentAdapter(AppCompatActivity baseUI, List<Class<? extends Fragment>> pagerCls)
+    public final void setFragmentAdapter(AppCompatActivity activity, List<Class<? extends Fragment>> pagerCls)
     {
-        viewPager.setAdapter((adapter = new PagerAdapter(baseUI.getSupportFragmentManager(), pagerCls)));
+        PagerAdapter adapter = new PagerAdapter(activity.getSupportFragmentManager(), pagerCls);
+        adapterCallBack = adapter;
+        viewPager.setAdapter(adapter);
 
         if(existTab) {
             /*使用变量i 与 position 设定点击事件定位的位置*/
             int i = 0;
 
             tabContent.removeAllViews();
-            for (Class<? extends Fragment> cls : pagerCls) {
-                tabContent.addView(generateTabItem(baseUI,i,cls));
+            for (Class cls : pagerCls) {
+                tabContent.addView(generateTabItem(activity,i,cls));
                 i++;
             }
-        }
 
-        tabWidth = -1;
+            tabWidth = -1;
+        }
     }
 
     public void setDrawAdapterListener(DrawScrollBarListener listener)
@@ -372,6 +403,10 @@ public class FragmentViewPager extends LinearLayout implements ViewPager.OnPageC
         viewPager.addOnPageChangeListener(listener);
     }
 
+    public void setCanTouchScroll(boolean canTouchScroll)
+    {
+        viewPager.setCanTouchScroll(canTouchScroll);
+    }
 
 
 
@@ -380,10 +415,48 @@ public class FragmentViewPager extends LinearLayout implements ViewPager.OnPageC
 
 
 
+    /*自定义内部类*/
 
-    /*FragmentViewPager适配器*/
 
-    private static class PagerAdapter extends FragmentPagerAdapter {
+
+
+
+
+    /*自定义ViewPager*/
+    private static class CustomViewPager extends ViewPager{
+        private boolean canTouchScroll;
+
+        public CustomViewPager(Context context) {
+            super(context);
+        }
+
+        /*滑动控制*/
+        public void setCanTouchScroll(boolean canTouchScroll)
+        {
+            this.canTouchScroll = canTouchScroll;
+        }
+
+        @Override
+        public boolean onTouchEvent(MotionEvent ev) {
+            /*判断是否支持滑动控制*/
+            return canTouchScroll && super.onTouchEvent(ev);
+        }
+    }
+
+
+
+
+    /*ImprovedViewPager 适配器抽象类*/
+
+    public static abstract class AbstractPagerAdapter extends android.support.v4.view.PagerAdapter
+            implements PagerAdapterCallBack{
+
+    }
+
+
+    /*ImprovedViewPager Fragment适配器*/
+
+    private static class PagerAdapter extends FragmentPagerAdapter implements PagerAdapterCallBack{
         private boolean isReseting;
         private final Bundle dataBundle;
         private HashMap<Class<? extends Fragment>,SoftReference<Fragment>> fragmentMap;
@@ -466,6 +539,10 @@ public class FragmentViewPager extends LinearLayout implements ViewPager.OnPageC
 
 
 
+
+
+
+
     /*标签容器*/
 
     private class TabLayout extends HorizontalScrollView {
@@ -489,6 +566,9 @@ public class FragmentViewPager extends LinearLayout implements ViewPager.OnPageC
             drawView.invalidate();
         }
     }
+
+
+
 
 
 
@@ -516,14 +596,20 @@ public class FragmentViewPager extends LinearLayout implements ViewPager.OnPageC
 
 
 
+
+
+
     /*生成标签项视图工厂*/
 
     public interface BaseUIPagerTabFactory{
-        View generatedView(LayoutInflater inflater, final int position, Class<? extends Fragment> fragmentCls);
+        View generatedView(LayoutInflater inflater, final int position);
         OnClickListener generatedOnClickListener(
                 ViewPager pager,
                 final int position);
     }
+
+
+
 
 
     /*绘制滚动条接口*/
@@ -531,6 +617,10 @@ public class FragmentViewPager extends LinearLayout implements ViewPager.OnPageC
     public interface DrawScrollBarListener{
         void onDrawScrollBar(View view, Canvas canvas, float start, float tabWidth);
     }
+
+
+
+
 
 
     /*默认的滚动条接口*/
@@ -557,5 +647,16 @@ public class FragmentViewPager extends LinearLayout implements ViewPager.OnPageC
             canvas.drawRect(start, top, right, bottom, paint);
             canvas.drawPath(path,paint);
         }
+    }
+
+
+
+
+
+    /*ImprovedViewPager回调接口*/
+    public interface PagerAdapterCallBack{
+        Bundle getPagerBundle();
+        void resetData();
+        int getCount();
     }
 }

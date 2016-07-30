@@ -437,6 +437,11 @@ public class ImprovedViewPager extends LinearLayout implements ViewPager.OnPageC
         }
 
         @Override
+        public boolean onInterceptTouchEvent(MotionEvent ev) {
+            return canTouchScroll && super.onInterceptTouchEvent(ev);
+        }
+
+        @Override
         public boolean onTouchEvent(MotionEvent ev) {
             /*判断是否支持滑动控制*/
             return canTouchScroll && super.onTouchEvent(ev);

@@ -1,5 +1,6 @@
 package com.virtualightning.library.simple2develop.state;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -11,7 +12,8 @@ import java.util.Map;
  * 状态记录
  */
 @SuppressWarnings("unused")
-public final class StateRecord {
+public final class StateRecord implements Serializable{
+
     private static final HashMap<String,StateMediator> globalStates = new HashMap<>();
     private HashMap<String,StateMediator> monitorStates;
     private InternalState internalState;

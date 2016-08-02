@@ -3,6 +3,8 @@ package com.virtualightning.library.simple2develop.state;
 import android.os.Message;
 import android.support.annotation.Nullable;
 
+import java.io.Serializable;
+
 /**
  * Created by CimZzz on 16/7/21.<br>
  * Project Name : Virtual-Lightning Simple2Develop<br>
@@ -11,7 +13,7 @@ import android.support.annotation.Nullable;
  * 状态中介者
  */
 @SuppressWarnings("unused")
-public final class StateMediator {
+public final class StateMediator implements Serializable {
     private State state;
     private InternalState internalState;
     private Observer observer;

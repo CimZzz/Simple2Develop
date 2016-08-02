@@ -16,13 +16,13 @@ public final class MainLoopCall{
     static final int MSG_STATE_UPDATE = 1001;
 
     private static MainLoopCall call;
-    private Handler hander;
+    private Handler handler;
 
     /*定义单例方法*/
 
     private MainLoopCall()
     {
-        hander = new InternalHandler(Looper.getMainLooper());
+        handler = new InternalHandler(Looper.getMainLooper());
     }
 
     static MainLoopCall getInstance()
@@ -39,7 +39,7 @@ public final class MainLoopCall{
      * @param runnable Runnable
      */
     public void postRunnable(Runnable runnable){
-        hander.post(runnable);
+        handler.post(runnable);
     }
 
     /**
@@ -48,7 +48,7 @@ public final class MainLoopCall{
      */
     Message obtainMessage()
     {
-        return hander.obtainMessage();
+        return handler.obtainMessage();
     }
 
     /*内部类*/

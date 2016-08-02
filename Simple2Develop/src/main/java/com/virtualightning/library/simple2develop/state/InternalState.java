@@ -1,5 +1,7 @@
 package com.virtualightning.library.simple2develop.state;
 
+import java.io.Serializable;
+
 /**
  * Created by CimZzz on 16/7/21.<br>
  * Project Name : Virtual-Lightning Simple2Develop<br>
@@ -8,7 +10,7 @@ package com.virtualightning.library.simple2develop.state;
  * 状态记录的内部状态
  */
 @SuppressWarnings("unused")
-public final class InternalState {
+public final class InternalState implements Serializable {
     static final int INTERNAL_STATE_CREATE = 0;
     static final int INTERNAL_STATE_RUN = 1;
     static final int INTERNAL_STATE_STOP = 2;

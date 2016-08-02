@@ -1,5 +1,7 @@
 package com.virtualightning.library.simple2develop.state;
 
+import java.io.Serializable;
+
 /**
  * Created by CimZzz on 16/7/21.<br>
  * Project Name : Virtual-Lightning Simple2Develop<br>
@@ -8,7 +10,7 @@ package com.virtualightning.library.simple2develop.state;
  * 状态观察者（基类）
  */
 @SuppressWarnings("unused")
-public abstract class Observer {
+public abstract class Observer implements Serializable {
     private boolean isActived;
     private boolean runWhenStop;
 

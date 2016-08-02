@@ -1,5 +1,6 @@
 package com.virtualightning.library.simple2develop.state;
 
+import java.io.Serializable;
 import java.lang.ref.WeakReference;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -13,7 +14,7 @@ import java.util.List;
  * 状态对象
  */
 @SuppressWarnings("unused")
-public final class State {
+public final class State implements Serializable {
     private boolean state;
     private List<WeakReference<StateMediator>> mediatorReferences;
 

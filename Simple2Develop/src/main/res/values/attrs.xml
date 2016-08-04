@@ -38,4 +38,14 @@
         <attr name="tabHeight" format="dimension"/>
         <attr name="tabCount" format="integer"/>
     </declare-styleable>
+    
+    <declare-styleable name="SlidingMenu">
+        <attr name="menu" format="reference"/>
+        <attr name="content" format="reference"/>
+        <attr name="menuWidth" format="fraction"/>
+        <attr name="direction">
+            <flag name="left" value="0"/>
+            <flag name="right" value="1"/>
+        </attr>
+    </declare-styleable>
 </resources>

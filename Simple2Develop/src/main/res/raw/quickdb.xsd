@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xml:lang="EN"
+    targetNamespace="http://www.virtual-lightning.com.cn"
+    xmlns="http://www.virtual-lightning.com.cn"
+    elementFormDefault="unqualified">
+    <xs:element name="QuickDB" >
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="Config" minOccurs="1" maxOccurs="1"/>
+                <xs:element ref="Entity" minOccurs="1" maxOccurs="unbounded"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="Config">
+        <xs:complexType>
+            <xs:attribute name="version" use="required">
+                <xs:simpleType>
+                    <xs:restriction base="xs:integer">
+                        <xs:minInclusive value="1"/>
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:attribute>
+            <xs:attribute name="dbname" type="xs:string" use="required"/>
+            <xs:attribute name="showCreateLog" type="xs:boolean"/>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="Entity">
+        <xs:complexType>
+            <xs:sequence minOccurs="0" maxOccurs="unbounded">
+                <xs:element ref="Update"/>
+            </xs:sequence>
+            <xs:attribute name="name" type="xs:string" use="required"/>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="Update">
+        <xs:complexType>
+            <xs:attribute name="version" use="required">
+                <xs:simpleType>
+                    <xs:restriction base="xs:integer">
+                        <xs:minExclusive value="1"/>
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:attribute>
+            <xs:attribute name="process" type="xs:string" use="required"/>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>

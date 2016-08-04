@@ -8,6 +8,7 @@ import android.os.Message;
  * Created by CimZzz on 16/7/21.<br>
  * Project Name : Virtual-Lightning Simple2Develop<br>
  * Since : VLSimple2Develop_0.0.1<br>
+ * Modify : VLSimple2Develop_0.1.1 将获取单例方法从包共享设置为共有，供开发者使用
  * Description:<br>
  * 主线程调用类
  */
@@ -25,7 +26,7 @@ public final class MainLoopCall{
         handler = new InternalHandler(Looper.getMainLooper());
     }
 
-    static MainLoopCall getInstance()
+    public static MainLoopCall getInstance()
     {
         return call != null ? call : (call = new MainLoopCall());
     }

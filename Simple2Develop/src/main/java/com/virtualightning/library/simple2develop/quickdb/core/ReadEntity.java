@@ -1,6 +1,7 @@
 package com.virtualightning.library.simple2develop.quickdb.core;
 
 import com.virtualightning.library.simple2develop.quickdb.core.register.ForeignKey;
+import com.virtualightning.library.simple2develop.quickdb.core.register.NotContain;
 import com.virtualightning.library.simple2develop.quickdb.core.register.NotNull;
 import com.virtualightning.library.simple2develop.quickdb.core.register.PrimaryKey;
 import com.virtualightning.library.simple2develop.quickdb.exception.VLInitException;
@@ -165,9 +166,14 @@ public class ReadEntity{
             field.setAccessible(true);
 
             /*获取全部支持的注解类型*/
+            NotContain nc = field.getAnnotation(NotContain.class);
             PrimaryKey pK = field.getAnnotation(PrimaryKey.class);
             ForeignKey fK = field.getAnnotation(ForeignKey.class);
             NotNull notNull = field.getAnnotation(NotNull.class);
+
+            /*如果被明确标注不被包含，则会跳过此属性解析*/
+            if(nc != null)
+                continue;
 
             /*属性冲突*/
             if( pK != null && notNull != null )
@@ -183,7 +189,7 @@ public class ReadEntity{
             {
                 Class foreignCls = fK.fieldSrc();
 
-                Field foreignField = null;
+                Field foreignField;
                 try {
                     foreignField = foreignCls.getDeclaredField(fK.fieldName());
 

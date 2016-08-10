@@ -1,4 +1,4 @@
-package com.virtualightning.library.simple2develop.widget;
+package com.virtualightning.library.simple2develop.quickdb.core.register;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -6,16 +6,13 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Created by CimZzz on 16/7/25.<br>
+ * Created by CimZzz on 16/6/9.<br>
  * Project Name : Virtual-Lightning Simple2Develop<br>
- * Since : VLSimple2Develop_0.0.3<br>
+ * Since : VLSimple2Develop_0.1.0<br>
  * Description:<br>
- * 命名页面注解
+ * 限定属性为不会被解析
  */
-@Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface PagerName {
-     int value() default -1;
-
-     String name() default "";
+@Target(ElementType.FIELD)
+public @interface NotContain {
 }

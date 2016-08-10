@@ -283,13 +283,19 @@ public class ImprovedViewPager extends LinearLayout implements ViewPager.OnPageC
                     ViewGroup.LayoutParams.MATCH_PARENT));
 
             int nameID = -1;
+            String nameStr = "";
             if(pageCls != null) {
                 PagerName pagerName = (PagerName) pageCls.getAnnotation(PagerName.class);
                 nameID = pagerName != null ? pagerName.value() : -1;
+                nameStr = pagerName != null ? pagerName.name() : "";
             }
 
             //noinspection ResourceType
-            textView.setText(nameID != -1 ? activity.getText(nameID) : "无名字");
+            textView.setText(nameID != -1 ?
+                    activity.getText(nameID)
+                    : !nameStr.equals("") ?
+                    nameStr
+                    : "无名字");
 
             textView.setOnClickListener(new OnClickListener() {
                 @Override

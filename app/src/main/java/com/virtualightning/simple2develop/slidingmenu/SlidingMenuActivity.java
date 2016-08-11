@@ -16,8 +16,8 @@ import java.util.Random;
 
 /**
  * Created by CimZzz on 16/8/3.<br>
- * Project Name : Virtual-Lightning Riding<br>
- * Since : VLRiding_0.0.1<br>
+ * Project Name : Virtual-Lightning Simple2Develop<br>
+ * Since : VLSimple2Develop_0.1.1<br>
  * Description:<br>
  * 滑动菜单
  */

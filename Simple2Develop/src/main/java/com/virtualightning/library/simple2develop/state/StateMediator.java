@@ -9,6 +9,7 @@ import java.io.Serializable;
  * Created by CimZzz on 16/7/21.<br>
  * Project Name : Virtual-Lightning Simple2Develop<br>
  * Since : VLSimple2Develop_0.0.1<br>
+ * Modify : VLSimple2Develop_0.1.4 添加切换相反状态方法<br>
  * Description:<br>
  * 状态中介者
  */
@@ -64,6 +65,18 @@ public final class StateMediator implements Serializable {
 
 
     /*状态变更*/
+
+
+
+    /**
+     * 更改状态为相反状态
+     * @since VLSimple2Develop_0.1.4
+     * @param arg 额外的参数
+     */
+    void changeStateAgainst(Object... arg)
+    {
+        this.state.changeStateAgainst(arg);
+    }
 
     /**
      * 改变状态至指定状态，在改变的过程中可以附加额外的参数。

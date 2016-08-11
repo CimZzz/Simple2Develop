@@ -19,6 +19,7 @@ import java.util.Map;
  * Created by CimZzz on 16/6/7.<br>
  * Project Name : Virtual-Lightning Simple2Develop<br>
  * Since : VLSimple2Develop_0.1.0<br>
+ * Modify : VLSimple2Develop_0.1.4 修正主键丢失类型名错误<br>
  * Description:<br>
  * 持久化对象信息读取实体
  */
@@ -236,6 +237,8 @@ public class ReadEntity{
                 }
                 else if(fieldCls.equals(Integer.class))
                 {
+                    /*修正：丢失类型名 修正版本 0.1.4*/
+                    typeName += "integer";
                     typeName += pK.variable() ? " auto_increment" : "";
                 }
                 else {
@@ -257,7 +260,8 @@ public class ReadEntity{
             createSQL.append(" ");
 
             /*判断其额外属性*/
-            if (pK != null || notNull != null)
+            /*如果主键不为自动生成的话执行此操作*/
+            if ((pK != null && !pK.variable()) || notNull != null)
             {
                 createSQL.append("not null");
             }

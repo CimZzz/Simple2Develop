@@ -25,7 +25,6 @@ public class Fragment2 extends Fragment{
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        MediaPlayer s
         TextView textView = new TextView(getContext());
         textView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         textView.setBackgroundColor(Color.GREEN);

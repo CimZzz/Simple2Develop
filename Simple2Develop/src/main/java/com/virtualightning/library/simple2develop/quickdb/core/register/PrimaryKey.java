@@ -27,5 +27,5 @@ public @interface PrimaryKey {
      * 限定整数主键是否为自增长，缺省为true<br>
      * @return 字符串主键长度是否可变或整数主键是否为自增长
      */
-    boolean variable() default true;
+    boolean variable() default false;
 }

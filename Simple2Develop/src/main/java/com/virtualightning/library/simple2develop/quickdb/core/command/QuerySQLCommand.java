@@ -95,6 +95,7 @@ public class QuerySQLCommand<T> extends SQLCommand {
     @Override
     public void execute(SQLiteDatabase database) {
         list = new ArrayList<>();
+
         Cursor cursor = database.rawQuery(sql, args);
 
         int cursorCount = cursor.getColumnCount();

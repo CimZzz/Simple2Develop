@@ -1,7 +1,5 @@
-<QuickDB
-    xmlns="http://www.virtual-lightning.com.cn"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.virtual-lightning.com.cn quickdb.xsd" >
-    <Config version="1" dbname="db_mis"/>
-    <Entity name="com.virtualightning.simple2develop.analyze.view.AnalyzeViewActivity"/>
+<QuickDB xmlns="http://www.virtual-lightning.com.cn">
+    <Config version="1" dbname="db_mis" showCreateLog="true"/>
+    <Entity name="com.virtualightning.simple2develop.quickdb.entity.User1"/>
+    <Entity name="com.virtualightning.simple2develop.quickdb.entity.Entity1"/>
 </QuickDB>

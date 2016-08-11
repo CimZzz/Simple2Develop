@@ -8,12 +8,12 @@ import java.util.Map;
  * Created by CimZzz on 16/7/21.<br>
  * Project Name : Virtual-Lightning Simple2Develop<br>
  * Since : VLSimple2Develop_0.0.1<br>
+ * Modify : VLSimple2Develop_0.1.4 添加切换相反状态方法<br>
  * Description:<br>
  * 状态记录
  */
 @SuppressWarnings("unused")
 public final class StateRecord implements Serializable{
-
     private static final HashMap<String,StateMediator> globalStates = new HashMap<>();
     private HashMap<String,StateMediator> monitorStates;
     private InternalState internalState;
@@ -168,6 +168,24 @@ public final class StateRecord implements Serializable{
 
 
     /*状态变更*/
+
+
+    /**
+     * 更改状态为相反状态
+     * @since VLSimple2Develop_0.1.4
+     * @param stateID 状态ID
+     * @param arg 额外的参数
+     */
+    public void changeStateAgainst(String stateID,Object... arg)
+    {
+        synchronized (locker)
+        {
+            if(!monitorStates.containsKey(stateID))
+                return;
+
+            monitorStates.get(stateID).changeStateAgainst(arg);
+        }
+    }
 
     /**
      * 根据状态ID改变状态至指定状态，在改变的过程中可以附加额外的参数。

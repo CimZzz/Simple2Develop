@@ -10,6 +10,7 @@ import java.util.List;
  * Created by CimZzz on 16/7/21.<br>
  * Project Name : Virtual-Lightning Simple2Develop<br>
  * Since : VLSimple2Develop_0.0.1<br>
+ * Modify : VLSimple2Develop_0.1.4 添加切换相反状态方法<br>
  * Description:<br>
  * 状态对象
  */
@@ -50,6 +51,21 @@ public final class State implements Serializable {
 
 
     /*状态变更*/
+
+    /**
+     * 更改状态为相反状态
+     * @since VLSimple2Develop_0.1.4
+     * @param arg 额外的参数
+     */
+    void changeStateAgainst(Object... arg)
+    {
+        synchronized (this)
+        {
+            this.state = !state;
+
+            notifyMediator(arg);
+        }
+    }
 
     /**
      * 改变状态至指定状态，在改变的过程中可以附加额外的参数。

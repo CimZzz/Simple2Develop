@@ -4,12 +4,14 @@ import android.os.Message;
 import android.support.annotation.Nullable;
 
 import java.io.Serializable;
+import java.lang.ref.WeakReference;
 
 /**
  * Created by CimZzz on 16/7/21.<br>
  * Project Name : Virtual-Lightning Simple2Develop<br>
  * Since : VLSimple2Develop_0.0.1<br>
  * Modify : VLSimple2Develop_0.1.4 添加切换相反状态方法<br>
+ * Modify : VLSimple2Develop_0.1.6 修正了严重的内存泄漏错误（当观察者是内部类并且StateRecord被外部引用）<br>
  * Description:<br>
  * 状态中介者
  */
@@ -17,7 +19,7 @@ import java.io.Serializable;
 public final class StateMediator implements Serializable {
     private State state;
     private InternalState internalState;
-    private Observer observer;
+    private WeakReference<Observer> observerReference;
     private int sequenceId;
 
     StateMediator(boolean state,InternalState internalState)
@@ -41,13 +43,14 @@ public final class StateMediator implements Serializable {
     /*注册状态观察者*/
 
     /**
-     * 注册状态观察者，一旦注册之后不能更改
+     * 注册状态观察者，一旦注册之后不能更改<br>
+     * Modify : VLSimple2Develop_0.1.6 由内部强引用变为弱引用，确保了内部类的垃圾回收<br>
      * @param observer 状态观察者
      */
     void registObserver(Observer observer)
     {
-        if(this.observer == null)
-            this.observer = observer;
+        if(this.observerReference == null)
+            this.observerReference = new WeakReference<>(observer);
     }
 
 
@@ -107,6 +110,7 @@ public final class StateMediator implements Serializable {
      */
     synchronized void notifyObserver(boolean isStateCall,Object... arg)
     {
+        Observer observer = observerReference != null ? observerReference.get() : null;
         if((observer == null) || (!isStateCall && !observer.isActivedObserver()))
             return;
 
@@ -133,7 +137,9 @@ public final class StateMediator implements Serializable {
         }
 
         /*处理观察者更新*/
-        observer.handle(state.getState(),internalState.isRunState(),arg);
+        Observer observer = observerReference != null ? observerReference.get() : null;
+        if(observer != null)
+            observer.handle(state.getState(),internalState.isRunState(),arg);
     }
 
 

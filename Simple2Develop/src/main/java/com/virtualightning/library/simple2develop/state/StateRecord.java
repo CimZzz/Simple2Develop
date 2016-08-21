@@ -9,6 +9,7 @@ import java.util.Map;
  * Project Name : Virtual-Lightning Simple2Develop<br>
  * Since : VLSimple2Develop_0.0.1<br>
  * Modify : VLSimple2Develop_0.1.4 添加切换相反状态方法<br>
+ * Modify : VLSimple2Develop_0.1.6 添加状态记录自身的内部状态以及判断方法<br>
  * Description:<br>
  * 状态记录
  */
@@ -43,14 +44,17 @@ public final class StateRecord implements Serializable{
     }
 
     /**
-     * 设置当前状态为可运行状态，更新全部状态
+     * 设置当前状态为可运行状态，更新全部状态<br>
+     * Modify : VLSimple2Develop_0.1.6 如果当前状态处于Destory时不会执行任何动作<br>
      */
     public void setRunState()
     {
-        internalState.setInternalState(InternalState.INTERNAL_STATE_RUN);
-        synchronized (locker){
-            for(StateMediator mediator : monitorStates.values())
-                mediator.notifyObserver(false);
+        if(!isDestroyState()) {
+            internalState.setInternalState(InternalState.INTERNAL_STATE_RUN);
+            synchronized (locker) {
+                for (StateMediator mediator : monitorStates.values())
+                    mediator.notifyObserver(false);
+            }
         }
     }
 
@@ -63,13 +67,53 @@ public final class StateRecord implements Serializable{
     }
 
     /**
-     * 判断当前状态是否为可运行状态
-     * @return 如果是返回true
+     * 设置当前状态为销毁状态
+     * @since : VLSimple2Develop_0.1.6
+     */
+    public void setDestroyState()
+    {
+        internalState.setInternalState(InternalState.INTERNAL_STATE_DESTORY);
+    }
+
+    /**
+     * 判断当前的内部状态是否处于运行状态。
+     * @return 如果当前内部状态为 {@link InternalState#INTERNAL_STATE_RUN} 时返回true
      */
     public boolean isRunState()
     {
         return internalState.isRunState();
     }
+
+    /**
+     * 判断当前的内部状态是否处于创建状态。
+     * @since : VLSimple2Develop_0.1.6
+     * @return 如果当前内部状态为 {@link InternalState#INTERNAL_STATE_CREATE} 时返回true
+     */
+    public boolean isCreateState()
+    {
+        return internalState.isCreateState();
+    }
+
+    /**
+     * 判断当前的内部状态是否处于销毁状态。
+     * @since : VLSimple2Develop_0.1.6
+     * @return 如果当前内部状态为 {@link InternalState#INTERNAL_STATE_DESTORY} 时返回true
+     */
+    public boolean isDestroyState()
+    {
+        return internalState.isDestroyState();
+    }
+
+    /**
+     * 获取当前的内部状态ID
+     * @since : VLSimple2Develop_0.1.6
+     * @return 返回当前状态的状态ID
+     */
+    public int getCurrnetInternalState()
+    {
+        return internalState.getCurrnetInternalState();
+    }
+
 
 
     /*添加监控状态，如果当前状态名已经存在则无法覆盖添加*/

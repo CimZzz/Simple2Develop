@@ -20,6 +20,7 @@ import java.util.Map;
  * Project Name : Virtual-Lightning Simple2Develop<br>
  * Since : VLSimple2Develop_0.1.0<br>
  * Modify : VLSimple2Develop_0.1.4 修正主键丢失类型名错误<br>
+ * Modify : VLSimple2Develop_0.1.5 修正自增主键需要主动赋值错误<br>
  * Description:<br>
  * 持久化对象信息读取实体
  */
@@ -67,6 +68,8 @@ public class ReadEntity{
 
     /**
      * 解析持久化对象信息实体
+     * Modify : VLSimple2Develop_0.1.4 修正主键丢失类型名错误<br>
+     * Modify : VLSimple2Develop_0.1.5 修正自增主键需要主动赋值错误<br>
      * @param checkMap 持久化实体验证表（用来判断实体是否存在其中）
      * @param updateMap Update对象享元表
      * @param foreignSQL 外键语句列表（暂时无用）
@@ -159,6 +162,7 @@ public class ReadEntity{
             /*基本声明*/
             String fieldName = field.getName().toLowerCase();
             String typeName = "";
+            boolean isVariable = false;
 
             /*获取属性类型*/
             Class<?> fieldCls = field.getType();
@@ -239,7 +243,7 @@ public class ReadEntity{
                 {
                     /*修正：丢失类型名 修正版本 0.1.4*/
                     typeName += "integer";
-                    typeName += pK.variable() ? " auto_increment" : "";
+                    typeName +=  (isVariable = pK.variable()) ? " auto_increment" : "";
                 }
                 else {
                     throw new VLInitException(cls.getName()+"主键属性或关联外键的属性类型只能为 String或Integer");
@@ -268,8 +272,9 @@ public class ReadEntity{
 
             createSQL.append(",");
 
-            /*添加属性到持久化实体内*/
-            entity.properties.put(fieldName,field);
+            /*添加属性到持久化实体，如果是自增主键字段则不添加*/
+            if(!isVariable)
+                entity.properties.put(fieldName,field);
         }
 
         /*判断主键是否为空*/

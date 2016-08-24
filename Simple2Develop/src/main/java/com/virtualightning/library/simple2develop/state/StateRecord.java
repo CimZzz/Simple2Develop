@@ -1,8 +1,8 @@
 package com.virtualightning.library.simple2develop.state;
 
 import java.io.Serializable;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Created by CimZzz on 16/7/21.<br>
@@ -15,14 +15,14 @@ import java.util.Map;
  */
 @SuppressWarnings("unused")
 public final class StateRecord implements Serializable{
-    private static final HashMap<String,StateMediator> globalStates = new HashMap<>();
-    private HashMap<String,StateMediator> monitorStates;
+    private static final ConcurrentHashMap<String,StateMediator> globalStates = new ConcurrentHashMap<>();
+    private ConcurrentHashMap<String,StateMediator> monitorStates;
     private InternalState internalState;
     private final Object locker;
 
     StateRecord()
     {
-        monitorStates = new HashMap<>();
+        monitorStates = new ConcurrentHashMap<>();
         internalState = new InternalState();
         locker = new Object();
     }
@@ -68,11 +68,14 @@ public final class StateRecord implements Serializable{
 
     /**
      * 设置当前状态为销毁状态
+     * Modify : VLSimple2Develop_0.1.8 清除内部全部引用<br>
      * @since : VLSimple2Develop_0.1.6
      */
     public void setDestroyState()
     {
         internalState.setInternalState(InternalState.INTERNAL_STATE_DESTORY);
+        /*清除监控状态表*/
+        monitorStates.clear();
     }
 
     /**

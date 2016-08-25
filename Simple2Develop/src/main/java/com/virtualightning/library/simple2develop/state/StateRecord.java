@@ -10,6 +10,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * Since : VLSimple2Develop_0.0.1<br>
  * Modify : VLSimple2Develop_0.1.4 添加切换相反状态方法<br>
  * Modify : VLSimple2Develop_0.1.6 添加状态记录自身的内部状态以及判断方法<br>
+ * Modify : VLSimple2Develop_0.1.9 再次修正了内存泄露问题<br>
  * Description:<br>
  * 状态记录
  */
@@ -69,13 +70,20 @@ public final class StateRecord implements Serializable{
     /**
      * 设置当前状态为销毁状态
      * Modify : VLSimple2Develop_0.1.8 清除内部全部引用<br>
+     * Modify : VLSimple2Develop_0.1.9 清除内部全部引用同时调用其中自我清理的方法<br>
      * @since : VLSimple2Develop_0.1.6
      */
     public void setDestroyState()
     {
-        internalState.setInternalState(InternalState.INTERNAL_STATE_DESTORY);
-        /*清除监控状态表*/
-        monitorStates.clear();
+        synchronized (locker) {
+            internalState.setInternalState(InternalState.INTERNAL_STATE_DESTORY);
+
+            /*清除监控状态表*/
+            for (StateMediator mediator : monitorStates.values())
+                mediator.clear();
+
+            monitorStates.clear();
+        }
     }
 
     /**

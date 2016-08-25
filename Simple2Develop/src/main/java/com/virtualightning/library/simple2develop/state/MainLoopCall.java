@@ -76,7 +76,7 @@ public final class MainLoopCall{
                 case MSG_STATE_UPDATE :
                     Object[] objects = (Object[]) msg.obj;
                     StateMediator mediator = (StateMediator)objects[0];
-
+                    msg.obj = null;
                     if(msg.arg1 == mediator.getSequenceId())
                         mediator.updateObserver((Object[])objects[1]);
                     break;

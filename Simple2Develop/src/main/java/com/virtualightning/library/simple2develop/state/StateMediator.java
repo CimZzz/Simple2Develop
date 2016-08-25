@@ -12,6 +12,7 @@ import java.io.Serializable;
  * Modify : VLSimple2Develop_0.1.4 添加切换相反状态方法<br>
  * Modify : VLSimple2Develop_0.1.6 修正了严重的内存泄漏错误（当观察者是内部类并且StateRecord被外部引用）<br>
  * Modify : VLSimple2Develop_0.1.8 修正了Observer被非正常回收错误<br>
+ * Modify : VLSimple2Develop_0.1.9 再次修正了内存泄露问题<br>
  * Description:<br>
  * 状态中介者
  */
@@ -78,7 +79,9 @@ public final class StateMediator implements Serializable {
      */
     void changeStateAgainst(Object... arg)
     {
-        this.state.changeStateAgainst(arg);
+        synchronized (this) {
+            this.state.changeStateAgainst(arg);
+        }
     }
 
     /**
@@ -88,7 +91,9 @@ public final class StateMediator implements Serializable {
      */
     void changeState(boolean state,Object... arg)
     {
-        this.state.changeState(state,arg);
+        synchronized (this) {
+            this.state.changeState(state, arg);
+        }
     }
 
     /*获取状态*/
@@ -110,9 +115,11 @@ public final class StateMediator implements Serializable {
      */
     synchronized void notifyObserver(boolean isStateCall,Object... arg)
     {
-        if((observer == null) || (!isStateCall && !observer.isActivedObserver()))
-            return;
+        synchronized (this) {
+            if ((observer == null) || (!isStateCall && !observer.isActivedObserver()))
+                return;
 
+        }
         /*生成下一个序列号*/
         nextSequenceId();
 
@@ -129,10 +136,13 @@ public final class StateMediator implements Serializable {
      */
     synchronized void updateObserver(@Nullable Object... arg)
     {
+        Observer observer;
         synchronized (this)
         {
             /*序列号初始化*/
             sequenceId = -1;
+
+            observer = this.observer;
         }
 
         /*处理观察者更新*/
@@ -163,6 +173,21 @@ public final class StateMediator implements Serializable {
     {
         synchronized (this) {
             sequenceId++;
+        }
+    }
+
+
+    /*清空中介状态*/
+
+    /**
+     * 清空中介状态，保证垃圾回收
+     * @since VLSimple2Develop_0.1.9<br>
+     */
+    void clear()
+    {
+        synchronized (this) {
+            observer = null;
+            state = null;
         }
     }
 }

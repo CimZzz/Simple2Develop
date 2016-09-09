@@ -2,7 +2,7 @@ apply plugin: 'com.android.library'
 apply plugin: 'com.github.dcendents.android-maven'
 apply plugin: 'com.jfrog.bintray'
 
-version = "0.1.8"
+version = "0.2.1"
 
 android {
     resourcePrefix "" //随意填写
@@ -32,7 +32,7 @@ dependencies {
 
 def siteUrl = 'https://github.com/CimZzz/Simple2Develop'   // 项目的主页
 def gitUrl = 'https://github.com/CimZzz/Simple2Develop/'   // Git仓库的url
-group = "com.virtualightning.library.simple2develop"            // Maven Group ID for the artifact，一般填你唯一的包名
+group = "com.virtualightning.library.simple2develop"       // Maven Group ID for the artifact，一般填你唯一的包名
 install {
     repositories.mavenInstaller {
         // This generates POM.xml with proper parameters

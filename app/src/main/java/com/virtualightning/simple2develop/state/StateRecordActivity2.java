@@ -23,14 +23,14 @@ import com.virtualightning.simple2develop.R;
  * Description:<br>
  */
 /*监控全局状态，状态名为 “GS_0”*/
-@AnalyzeGlobalState(StateRecordActivity.GLOBAL_STATE_0)
+@AnalyzeGlobalState(StateRecordActivity2.GLOBAL_STATE_0)
 
 /*监控私有状态，状态名为 “0” ，初始状态为 true*/
 @AnalyzeState(
-       stateNames = {StateRecordActivity.STATE_0},
+       stateNames = {StateRecordActivity2.STATE_0},
        states = {true}
 )
-public class StateRecordActivity extends ActionBarUI {
+public class StateRecordActivity2 extends ActionBarUI {
     public static final String GLOBAL_STATE_0 = "GS_0";//全局状态
     public static final String STATE_0 = "0";//私有状态
 
@@ -79,7 +79,42 @@ public class StateRecordActivity extends ActionBarUI {
                         /*模拟通过耗时操作获得结果*/
                         String result = "123456";
 
+
                         /*通知私有状态发生改变，改变后状态为 true，附加额外的参数为一个字符串*/
+                        stateRecord.changeState(STATE_0,true,result);
+                        stateRecord.changeState(STATE_0,true,result);
+                        stateRecord.changeState(STATE_0,true,result);
+                        stateRecord.changeState(STATE_0,true,result);
+                        stateRecord.changeState(STATE_0,true,result);
+                    }
+                }).start();
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        /*模拟通过耗时操作获得结果*/
+                        String result = "4142425";
+
+
+                        /*通知私有状态发生改变，改变后状态为 true，附加额外的参数为一个字符串*/
+                        stateRecord.changeState(STATE_0,true,result);
+                        stateRecord.changeState(STATE_0,true,result);
+                        stateRecord.changeState(STATE_0,true,result);
+                        stateRecord.changeState(STATE_0,true,result);
+                        stateRecord.changeState(STATE_0,true,result);
+                    }
+                }).start();
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        /*模拟通过耗时操作获得结果*/
+                        String result = "86453253";
+
+
+                        /*通知私有状态发生改变，改变后状态为 true，附加额外的参数为一个字符串*/
+                        stateRecord.changeState(STATE_0,true,result);
+                        stateRecord.changeState(STATE_0,true,result);
+                        stateRecord.changeState(STATE_0,true,result);
+                        stateRecord.changeState(STATE_0,true,result);
                         stateRecord.changeState(STATE_0,true,result);
                     }
                 }).start();
@@ -98,7 +133,7 @@ public class StateRecordActivity extends ActionBarUI {
             @Override
             protected void trueStateUpdate(Object... arg) {
                 /*将 TextView 的文本置为 HelloWord */
-                tv.setText("状态记录重新激活，活性状态观察者自动触发 ： HelloWord!");
+                tv.setText("HelloWord!");
             }
 
             /*当处于 false 状态时执行的操作*/
@@ -117,7 +152,7 @@ public class StateRecordActivity extends ActionBarUI {
             protected void trueStateUpdate(Object... arg) {
                 /*将 TextView 的文本置为传递过来的参数 */
                 String result = (String) arg[0];
-                tv.setText("状态观察者触发，数据更改 ："+result);
+                tv.setText(result);
             }
 
             /*当处于 false 状态时执行的操作*/

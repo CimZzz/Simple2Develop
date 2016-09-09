@@ -11,6 +11,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * Modify : VLSimple2Develop_0.1.4 添加切换相反状态方法<br>
  * Modify : VLSimple2Develop_0.1.6 添加状态记录自身的内部状态以及判断方法<br>
  * Modify : VLSimple2Develop_0.1.9 再次修正了内存泄露问题<br>
+ * Modify : VLSimple2Develop_0.2.0 添加了消息序列号管理类，并对其兼容做出修改<br>
  * Description:<br>
  * 状态记录
  */
@@ -181,43 +182,69 @@ public final class StateRecord implements Serializable{
     /*注册状态观察者*/
 
     /**
-     * 注册状态观察者，一旦注册之后不能更改
+     * 注册状态观察者<br>
      * @param stateID 状态ID
      * @param observer 状态观察者
-     * @param isActivateObserver 是否为活性状态观察者
+     * @param isActivateObserver 判断是否为活性状态观察者
+     * @param hasSequence 判断是否使用消息序列管理类
      */
-    private void registObserver(String stateID,Observer observer,boolean isActivateObserver)
-    {
+    private void registObserver(String stateID,Observer observer,boolean isActivateObserver,boolean hasSequence){
         synchronized (locker){
             if(!monitorStates.containsKey(stateID))
                 return;
 
             observer.setActived(isActivateObserver);
 
-            monitorStates.get(stateID).registObserver(observer);
+            monitorStates.get(stateID).registObserver(observer,hasSequence);
         }
     }
 
     /**
-     * 注册活性状态观察者
-     * 活性状态观察者：每次内部状态切换至运行状态时自动通知更新一次
+     * 注册活性状态观察者<br>
+     * 活性状态观察者：每次内部状态切换至运行状态时自动通知更新一次<br>
+     * Modify : VLSimple2Develop_0.2.0 默认使用序列号管理类<br>
      * @param stateID 状态ID
      * @param observer 状态观察者
      */
     public void registActiviteObserver(String stateID,Observer observer)
     {
-        registObserver(stateID,observer,true);
+        registObserver(stateID,observer,true,true);
     }
 
     /**
-     * 注册惰性状态观察者
-     * 惰性状态观察者：只有状态改变时才会通知更新
+     * 注册活性状态观察者，可主动设置是否使用消息序列管理类<br>
+     * @since VLSimple2Develop_0.2.0
+     * @param stateID 状态ID
+     * @param observer 状态观察者
+     * @param hasSequence 判断是否使用消息序列管理类
+     */
+    public void registActiviteObserver(String stateID,boolean hasSequence,Observer observer)
+    {
+        registObserver(stateID,observer,true,hasSequence);
+    }
+
+    /**
+     * 注册惰性状态观察者<br>
+     * 惰性状态观察者：只有状态改变时才会通知更新<br>
+     * Modify : VLSimple2Develop_0.2.0 默认使用序列号管理类<br>
      * @param stateID 状态ID
      * @param observer 状态观察者
      */
     public void registInactiveObserver(String stateID,Observer observer)
     {
-        registObserver(stateID,observer,false);
+        registObserver(stateID,observer,false,true);
+    }
+
+    /**
+     * 注册惰性状态观察者，可主动设置是否使用消息序列管理类<br>
+     * @since VLSimple2Develop_0.2.0
+     * @param stateID 状态ID
+     * @param observer 状态观察者
+     * @param hasSequence 判断是否使用消息序列管理类
+     */
+    public void registInactiveObserver(String stateID,boolean hasSequence,Observer observer)
+    {
+        registObserver(stateID,observer,false,hasSequence);
     }
 
 

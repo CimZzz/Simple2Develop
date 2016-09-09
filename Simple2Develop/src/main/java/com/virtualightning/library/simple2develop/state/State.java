@@ -5,12 +5,14 @@ import java.lang.ref.WeakReference;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.ListIterator;
 
 /**
  * Created by CimZzz on 16/7/21.<br>
  * Project Name : Virtual-Lightning Simple2Develop<br>
  * Since : VLSimple2Develop_0.0.1<br>
  * Modify : VLSimple2Develop_0.1.4 添加切换相反状态方法<br>
+ * Modify : VLSimple2Develop_0.2.1 修复了对于状态中介的列表的同步问题<br>
  * Description:<br>
  * 状态对象
  */
@@ -18,6 +20,7 @@ import java.util.List;
 public final class State implements Serializable {
     private boolean state;
     private List<WeakReference<StateMediator>> mediatorReferences;
+    private ListIterator<WeakReference<StateMediator>> mediatorIterator;
 
     State(boolean state)
     {
@@ -29,12 +32,15 @@ public final class State implements Serializable {
 
     /**
      * 添加中介者至状态对象
+     * Modify : VLSimple2Develop_0.2.1 判断当前是否处于迭代状态，如果是，则会通过列表迭代器添加；如果否，则直接添加至列表<br>
      * @param mediator 中介者
      */
     void addMediator(StateMediator mediator)
     {
         synchronized (this) {
-            mediatorReferences.add(new WeakReference<>(mediator));
+            if(mediatorIterator != null)
+                mediatorIterator.add(new WeakReference<>(mediator));
+            else mediatorReferences.add(new WeakReference<>(mediator));
         }
     }
 
@@ -74,12 +80,9 @@ public final class State implements Serializable {
      */
     void changeState(boolean state,Object... arg)
     {
-        synchronized (this)
-        {
-            this.state = state;
+        this.state = state;
 
-            notifyMediator(arg);
-        }
+        notifyMediator(arg);
     }
 
 
@@ -87,24 +90,36 @@ public final class State implements Serializable {
 
     /**
      * 通知中介进行观察者更新
+     * Modify : VLSimple2Develop_0.2.1 每次产生迭代器时都会将其记录为最新迭代器，当最新的迭代器完成迭代后设置为空<br>
      * @param arg 额外的参数
      */
     private void notifyMediator(Object... arg)
     {
-        Iterator<WeakReference<StateMediator>> iterator = mediatorReferences.iterator();
+        ListIterator<WeakReference<StateMediator>> iterator;
 
-        while (iterator.hasNext())
-        {
+        /*获取列表迭代器*/
+        synchronized (this) {
+            iterator = mediatorReferences.listIterator();
+            this.mediatorIterator = iterator;
+        }
+
+        while (iterator.hasNext()) {
             WeakReference<StateMediator> mediatorReference = iterator.next();
             final StateMediator mediator = mediatorReference.get();
 
-            if(mediator == null)
-            {
+            if (mediator == null) {
                 iterator.remove();
                 continue;
             }
 
-            mediator.notifyObserver(true,arg);
+            mediator.notifyObserver(true, arg);
+        }
+
+        /*判断当前的列表迭代器是否为最新的列表迭代器，如果是则表示全部迭代完成，将列表迭代器*/
+        synchronized (this)
+        {
+            if(iterator == this.mediatorIterator)
+                this.mediatorIterator = null;
         }
     }
 }

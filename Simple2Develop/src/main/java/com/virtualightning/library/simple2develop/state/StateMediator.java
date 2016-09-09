@@ -13,6 +13,7 @@ import java.io.Serializable;
  * Modify : VLSimple2Develop_0.1.6 修正了严重的内存泄漏错误（当观察者是内部类并且StateRecord被外部引用）<br>
  * Modify : VLSimple2Develop_0.1.8 修正了Observer被非正常回收错误<br>
  * Modify : VLSimple2Develop_0.1.9 再次修正了内存泄露问题<br>
+ * Modify : VLSimple2Develop_0.2.0 增加了消息序列号管理类，将序列号功能分离作为可选项<br>
  * Description:<br>
  * 状态中介者
  */
@@ -21,22 +22,30 @@ public final class StateMediator implements Serializable {
     private State state;
     private InternalState internalState;
     private Observer observer;
-    private int sequenceId;
+    private MessageSequence msgSequence;
 
+    /**
+     * 只用于注册新状态时使用的构造函数，每次构造的同时会创建一个新的状态对象
+     * @param state 状态
+     * @param internalState 状态记录内部状态
+     */
     StateMediator(boolean state,InternalState internalState)
     {
         this.state = new State(state);
         this.internalState = internalState;
-        this.sequenceId = -1;
 
         this.state.addMediator(this);
     }
 
+    /**
+     * 只用于捕获全局状态或继承状态时使用的构造函数，其中的状态对象为被克隆实例的状态对象
+     * @param state 状态对象
+     * @param internalState 状态记录内部状态
+     */
     private StateMediator(State state,InternalState internalState)
     {
         this.state = state;
         this.internalState = internalState;
-        this.sequenceId = -1;
 
         this.state.addMediator(this);
     }
@@ -47,11 +56,15 @@ public final class StateMediator implements Serializable {
      * 注册状态观察者，一旦注册之后不能更改<br>
      * Modify : VLSimple2Develop_0.1.6 由内部强引用变为弱引用，确保了内部类的垃圾回收<br>
      * Modify : VLSimple2Develop_0.1.8 由弱引用改回强引用，通过 StateRecord 的内部状态来确保垃圾回收<br>
+     * Modify : VLSimple2Develop_0.2.0 添加条件判断是否需要使用消息序列号管理类<br>
      * @param observer 状态观察者
+     * @param hasSequence 判断是否需要消息序列号管理类
      */
-    void registObserver(Observer observer)
+    void registObserver(Observer observer,boolean hasSequence)
     {
         this.observer = observer;
+
+        this.msgSequence = hasSequence ? new MessageSequence() : null;
     }
 
 
@@ -69,8 +82,6 @@ public final class StateMediator implements Serializable {
 
 
     /*状态变更*/
-
-
 
     /**
      * 更改状态为相反状态
@@ -91,9 +102,7 @@ public final class StateMediator implements Serializable {
      */
     void changeState(boolean state,Object... arg)
     {
-        synchronized (this) {
-            this.state.changeState(state, arg);
-        }
+        this.state.changeState(state, arg);
     }
 
     /*获取状态*/
@@ -111,17 +120,18 @@ public final class StateMediator implements Serializable {
 
     /**
      * 发送通知更新消息
+     * Modify : VLSimple2Develop_0.2.0 添加条件判断，当状态记录处于销毁状态时<br>
      * @param arg 额外的参数
      */
-    synchronized void notifyObserver(boolean isStateCall,Object... arg)
+    void notifyObserver(boolean isStateCall,Object... arg)
     {
         synchronized (this) {
-            if ((observer == null) || (!isStateCall && !observer.isActivedObserver()))
+            if ((observer == null) || (!isStateCall && !observer.isActivedObserver()) || internalState.isDestroyState())
                 return;
 
         }
         /*生成下一个序列号*/
-        nextSequenceId();
+        int sequenceId = msgSequence != null ? msgSequence.nextSequence() : -1;
 
         Message msg = MainLoopCall.getInstance().obtainMessage();
         msg.what = MainLoopCall.MSG_STATE_UPDATE;
@@ -132,18 +142,16 @@ public final class StateMediator implements Serializable {
 
     /**
      * 更新观察者
+     * Modify : VLSimple2Develop_0.2.0 修改序列号初始化方式<br>
      * @param arg 额外的参数
      */
     synchronized void updateObserver(@Nullable Object... arg)
     {
-        Observer observer;
-        synchronized (this)
-        {
-            /*序列号初始化*/
-            sequenceId = -1;
+        Observer observer = this.observer;
 
-            observer = this.observer;
-        }
+        /*初始化序列号*/
+        if(msgSequence != null)
+            msgSequence.initSequence();
 
         /*处理观察者更新*/
         if(observer != null)
@@ -155,25 +163,14 @@ public final class StateMediator implements Serializable {
     /*序列ID*/
 
     /**
-     * 获取此中介对象在通知观察更新消息队列中的位置。由于在同一队列中可能包括多个相同中介对象，所以以序列ID决定
-     * 将要执行的那个消息
-     * @return 序列ID
+     * 验证当前序列号是否为最新序列号。如果没有使用消息序列机制则直接返回true
+     * @since VLSimple2Develop_0.2.0<br>
+     * @param sequenceId 当前序列号ID
+     * @return 如果验证成功返回true
      */
-    int getSequenceId()
+    boolean validateSequenceId(int sequenceId)
     {
-        synchronized (this) {
-            return sequenceId;
-        }
-    }
-
-    /**
-     * 生成下一个序列ID
-     */
-    private void nextSequenceId()
-    {
-        synchronized (this) {
-            sequenceId++;
-        }
+        return msgSequence == null || msgSequence.validateSequence(sequenceId);
     }
 
 
@@ -188,6 +185,7 @@ public final class StateMediator implements Serializable {
         synchronized (this) {
             observer = null;
             state = null;
+            msgSequence.initSequence();
         }
     }
 }

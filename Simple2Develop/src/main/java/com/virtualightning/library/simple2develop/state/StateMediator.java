@@ -14,6 +14,7 @@ import java.io.Serializable;
  * Modify : VLSimple2Develop_0.1.8 修正了Observer被非正常回收错误<br>
  * Modify : VLSimple2Develop_0.1.9 再次修正了内存泄露问题<br>
  * Modify : VLSimple2Develop_0.2.0 增加了消息序列号管理类，将序列号功能分离作为可选项<br>
+ * Modify : VLSimple2Develop_0.2.2 修复了消息队列的空指针异常<br>
  * Description:<br>
  * 状态中介者
  */
@@ -178,6 +179,7 @@ public final class StateMediator implements Serializable {
 
     /**
      * 清空中介状态，保证垃圾回收
+     * Modify : VLSimple2Develop_0.2.2 修复了消息队列的空指针异常<br>
      * @since VLSimple2Develop_0.1.9<br>
      */
     void clear()
@@ -185,7 +187,8 @@ public final class StateMediator implements Serializable {
         synchronized (this) {
             observer = null;
             state = null;
-            msgSequence.initSequence();
+            if(msgSequence != null)
+                msgSequence.initSequence();
         }
     }
 }

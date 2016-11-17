@@ -15,6 +15,7 @@ import java.io.Serializable;
  * Modify : VLSimple2Develop_0.1.9 再次修正了内存泄露问题<br>
  * Modify : VLSimple2Develop_0.2.0 增加了消息序列号管理类，将序列号功能分离作为可选项<br>
  * Modify : VLSimple2Develop_0.2.2 修复了消息队列的空指针异常<br>
+ * Modify : VLSimple2Develop_0.2.3 添加观察者的执行方式<br>
  * Description:<br>
  * 状态中介者
  */
@@ -122,23 +123,38 @@ public final class StateMediator implements Serializable {
     /**
      * 发送通知更新消息
      * Modify : VLSimple2Develop_0.2.0 添加条件判断，当状态记录处于销毁状态时<br>
+     * Modify : VLSimple2Develop_0.2.3 添加条件判断，如果状态观察者属于立即运行状态时，则会判断是否为耗时操作决定立即执行或者在线程池中执行<br>
      * @param arg 额外的参数
      */
     void notifyObserver(boolean isStateCall,Object... arg)
     {
         synchronized (this) {
-            if ((observer == null) || (!isStateCall && !observer.isActivedObserver()) || internalState.isDestroyState())
+            if ((observer == null) || (!isStateCall && !observer.isActiveObserver()) || internalState.isDestroyState())
                 return;
 
         }
-        /*生成下一个序列号*/
-        int sequenceId = msgSequence != null ? msgSequence.nextSequence() : -1;
 
-        Message msg = MainLoopCall.getInstance().obtainMessage();
-        msg.what = MainLoopCall.MSG_STATE_UPDATE;
-        msg.arg1 = sequenceId;
-        msg.obj = new Object[]{this,arg};
-        msg.sendToTarget();
+        switch (observer.getRunType()) {
+            /*运行在主线程*/
+            case Observer.RUN_TYPE_MAIN_LOOP :
+                /*生成下一个序列号*/
+                int sequenceId = msgSequence != null ? msgSequence.nextSequence() : -1;
+
+                Message msg = MainLoopCall.getInstance().obtainMessage();
+                msg.what = MainLoopCall.MSG_STATE_UPDATE;
+                msg.arg1 = sequenceId;
+                msg.obj = new Object[]{this,arg};
+                msg.sendToTarget();
+                break;
+            /*立即运行*/
+            case Observer.RUN_TYPE_IMMEDIATELY :
+                updateObserver(arg);
+                break;
+            /*运行在线程池*/
+            case Observer.RUN_TYPE_THREAD_POOL:
+                StateManagement.getInstance().getThreadPool().execute(new StateRunnable(this,arg));
+                break;
+        }
     }
 
     /**

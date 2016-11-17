@@ -11,6 +11,7 @@ import java.lang.reflect.Field;
  * Created by CimZzz on 16/7/22.<br>
  * Project Name : Virtual-Lightning Simple2Develop<br>
  * Since : VLSimple2Develop_0.0.1<br>
+ * Modify : VLSimple2Develop_0.2.3 如果初始状态数组不存在或者长度小于状态名数组长度，则在依次填充过后，缺省状态为 false <br>
  * Description:<br>
  * 注解解析器
  */
@@ -23,6 +24,7 @@ public class Analyzer {
 
     /**
      * 解析对象的一般状态注解
+     * Modify : VLSimple2Develop_0.2.3 如果初始状态数组不存在或者长度小于状态名数组长度，则在依次填充过后，缺省状态为 false <br>
      * @param record 状态记录
      * @param obj 对象
      */
@@ -37,11 +39,18 @@ public class Analyzer {
             String[] stateNames = stateAnno.stateNames();
             boolean[] states = stateAnno.states();
 
-            if (stateNames.length != states.length)
-                throw new RuntimeException("状态名和状态数量不一致：" + obj.getClass().getSimpleName());
+            if(states != null && states.length > stateNames.length)
+                throw new RuntimeException("状态数组长度大于状态名数组长度，异常发生在 " + obj.getClass().getName() + " 类");
 
-            for (int i = 0; i < stateNames.length; i++) {
-                record.monitorState(stateNames[i], states[i]);
+            int loopCount = states != null ? states.length : 0;
+
+
+            for (int i = 0 ; i < loopCount ; i ++)
+                record.monitorState(stateNames[i],states[i]);
+
+            if (stateNames.length != loopCount) {
+                for(int i = loopCount; i < stateNames.length ; i ++)
+                    record.monitorState(stateNames[i],false);
             }
         }
 

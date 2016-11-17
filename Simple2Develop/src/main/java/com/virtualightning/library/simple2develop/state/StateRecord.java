@@ -12,11 +12,13 @@ import java.util.concurrent.ConcurrentHashMap;
  * Modify : VLSimple2Develop_0.1.6 添加状态记录自身的内部状态以及判断方法<br>
  * Modify : VLSimple2Develop_0.1.9 再次修正了内存泄露问题<br>
  * Modify : VLSimple2Develop_0.2.0 添加了消息序列号管理类，并对其兼容做出修改<br>
+ * Modify : VLSimple2Develop_0.2.3 添加了通过观察者构造器注册观察者的方法，其余注册方法均为过时方法;添加了轮询注册状态观察者的方法<br>
  * Description:<br>
  * 状态记录
  */
 @SuppressWarnings("unused")
 public final class StateRecord implements Serializable{
+
     private static final ConcurrentHashMap<String,StateMediator> globalStates = new ConcurrentHashMap<>();
     private ConcurrentHashMap<String,StateMediator> monitorStates;
     private InternalState internalState;
@@ -181,19 +183,63 @@ public final class StateRecord implements Serializable{
 
     /*注册状态观察者*/
 
+
+    /**
+     * 根据注册状态观察者构造器注册状态观察者<br>
+     * @since VLSimple2Develop_0.2.3
+     * @param builder 注册状态观察者构造器
+     */
+    public void registerObserver(ObserverBuilder builder) {
+        builder.build();
+        String stateID = builder.getStateId();
+        boolean hasSequence = builder.isHasSequence();
+        Observer observer = builder.getObserver();
+
+        synchronized (locker){
+            if(!monitorStates.containsKey(stateID))
+                return;
+
+            monitorStates.get(stateID).registObserver(observer,hasSequence);
+        }
+    }
+
+    /**
+     * 通过状态观察者轮询注册接口配置注册状态者构造器，根据注册状态观察者构造器注册状态观察者<br>
+     * @since VLSimple2Develop_0.2.3
+     * @param registerObserverCallback 状态观察者轮询注册接口
+     */
+    public void registerObserverByLoop(IRegisterObserverCallback registerObserverCallback) {
+        synchronized (locker) {
+            ObserverBuilder builder = new ObserverBuilder();
+            for(Map.Entry<String,StateMediator> entry : monitorStates.entrySet()) {
+                String stateId = entry.getKey();
+
+                builder.init();
+                builder.stateId(stateId);
+                if(registerObserverCallback.configObserverBuilder(stateId,builder)) {
+                    builder.build();
+
+                    entry.getValue().registObserver(builder.getObserver(),builder.isHasSequence());
+                }
+            }
+        }
+    }
+
     /**
      * 注册状态观察者<br>
+     * Modify : VLSimple2Develop_0.2.3 过时<br>
      * @param stateID 状态ID
      * @param observer 状态观察者
      * @param isActivateObserver 判断是否为活性状态观察者
      * @param hasSequence 判断是否使用消息序列管理类
      */
+    @Deprecated
     private void registObserver(String stateID,Observer observer,boolean isActivateObserver,boolean hasSequence){
         synchronized (locker){
             if(!monitorStates.containsKey(stateID))
                 return;
 
-            observer.setActived(isActivateObserver);
+            observer.setActive(isActivateObserver);
 
             monitorStates.get(stateID).registObserver(observer,hasSequence);
         }
@@ -203,9 +249,12 @@ public final class StateRecord implements Serializable{
      * 注册活性状态观察者<br>
      * 活性状态观察者：每次内部状态切换至运行状态时自动通知更新一次<br>
      * Modify : VLSimple2Develop_0.2.0 默认使用序列号管理类<br>
+     * Modify : VLSimple2Develop_0.2.3 过时<br>
      * @param stateID 状态ID
      * @param observer 状态观察者
      */
+    @SuppressWarnings("deprecation")
+    @Deprecated
     public void registActiviteObserver(String stateID,Observer observer)
     {
         registObserver(stateID,observer,true,true);
@@ -213,11 +262,14 @@ public final class StateRecord implements Serializable{
 
     /**
      * 注册活性状态观察者，可主动设置是否使用消息序列管理类<br>
+     * Modify : VLSimple2Develop_0.2.3 过时<br>
      * @since VLSimple2Develop_0.2.0
      * @param stateID 状态ID
      * @param observer 状态观察者
      * @param hasSequence 判断是否使用消息序列管理类
      */
+    @SuppressWarnings("deprecation")
+    @Deprecated
     public void registActiviteObserver(String stateID,boolean hasSequence,Observer observer)
     {
         registObserver(stateID,observer,true,hasSequence);
@@ -227,9 +279,12 @@ public final class StateRecord implements Serializable{
      * 注册惰性状态观察者<br>
      * 惰性状态观察者：只有状态改变时才会通知更新<br>
      * Modify : VLSimple2Develop_0.2.0 默认使用序列号管理类<br>
+     * Modify : VLSimple2Develop_0.2.3 过时<br>
      * @param stateID 状态ID
      * @param observer 状态观察者
      */
+    @SuppressWarnings("deprecation")
+    @Deprecated
     public void registInactiveObserver(String stateID,Observer observer)
     {
         registObserver(stateID,observer,false,true);
@@ -237,23 +292,25 @@ public final class StateRecord implements Serializable{
 
     /**
      * 注册惰性状态观察者，可主动设置是否使用消息序列管理类<br>
+     * Modify : VLSimple2Develop_0.2.3 过时<br>
      * @since VLSimple2Develop_0.2.0
      * @param stateID 状态ID
      * @param observer 状态观察者
      * @param hasSequence 判断是否使用消息序列管理类
      */
+    @SuppressWarnings("deprecation")
+    @Deprecated
     public void registInactiveObserver(String stateID,boolean hasSequence,Observer observer)
     {
         registObserver(stateID,observer,false,hasSequence);
     }
 
 
-
     /*状态变更*/
 
 
     /**
-     * 更改状态为相反状态
+     * 更改状态为相反状态<br>
      * @since VLSimple2Develop_0.1.4
      * @param stateID 状态ID
      * @param arg 额外的参数

@@ -5,6 +5,8 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
@@ -12,6 +14,7 @@ import android.widget.LinearLayout;
  * Created by CimZzz on 16/7/23.<br>
  * Project Name : Virtual-Lightning Simple2Develop<br>
  * Since : VLSimple2Develop_0.0.3<br>
+ * Modify : VLSimple2Develop_0.2.4 添加是否显示工具栏选项<br>
  * Description:<br>
  * 自定义ActionBarActivity
  */
@@ -49,6 +52,11 @@ public abstract class ActionBarUI extends AppCompatActivity {
         if(!creater.validate())
         {
             throw new RuntimeException("ActivityCreater缺少必要的属性！");
+        }
+
+        if(creater.hasToolBar()) {
+            requestWindowFeature(Window.FEATURE_NO_TITLE);
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         }
 
         LayoutInflater inflater = getLayoutInflater();
